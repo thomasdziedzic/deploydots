@@ -47,3 +47,21 @@ Similarly for folders.
 ~/dotfiles/weechat is a folder, and a direct descendant of ~/dotfiles which will get created as ~/.weechat
 
 ~/dotfiles/urlwatch/cache is a folder and will get created as ~/.urlwatch/cache
+
+Quick example creating a dotfiles directory
+===========================================
+```
+mkdir ~/dotfiles
+cd dotfiles
+git init
+cp ~/.vimrc vimrc
+cp -r ~/.xmonad xmonad
+git add -A
+git commit -m 'initial commit'
+```
+
+Quick example creating symlinks from your dotfiles directory
+============================================================
+```
+deploydots
+```
