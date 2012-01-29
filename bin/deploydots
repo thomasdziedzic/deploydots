@@ -1,0 +1,81 @@
+#!/usr/bin/env ruby
+
+require 'find'
+
+$replace_all = false
+
+home_dir = Dir.home
+dotfiles_dir = File.join home_dir, 'dotfiles'
+
+Dir.chdir dotfiles_dir
+
+# makes a symlink which points from new -> old
+def link old, new
+  if File.exists? new
+    if File.symlink? new
+      return # symlinked already
+    else # file exists but isn't a symlink, assuming regular file
+      if $replace_all
+	File.delete new
+	File.symlink old, new
+	return
+      end
+
+      # ask what we should do (replace, replace_all, skip, skip_all, or quit)
+      response = nil
+      loop do
+	puts "#{new} already exists, 1) replace 2) replace all 3) quit"
+	begin
+	  response = Integer gets.chomp
+	rescue ArgumentError
+	  puts "not a valid number"
+	end
+
+	if (1..3).member? response
+	  break
+	else
+	  puts "number not in range of 1..3"
+	  redo
+	end
+      end
+
+      case response
+      when 1
+	File.delete new
+	File.symlink old, new
+      when 2
+	$replace_all = true
+	File.delete new
+	File.symlink old, new
+      when 3
+	exit
+      end
+    end 
+  else
+    # just create a regular symlink
+    File.symlink old, new
+  end
+end
+
+Dir['*'].each do |topfile|
+  next if topfile == 'README.md'
+  dotfile_name = '.' + topfile
+  dotfile_path = File.join home_dir, dotfile_name
+  topfile_path = File.join dotfiles_dir, topfile
+  if File.directory? topfile
+    Dir.mkdir dotfile_path unless File.directory? dotfile_path # create the folder unless it already exists
+
+    Find.find(topfile) do |file|
+      dotfile_child_path = File.join(home_dir, '.' + file)
+      topfile_child_path = File.join(dotfiles_dir, file)
+      if File.directory? topfile_child_path
+	Dir.mkdir dotfile_child_path unless File.directory? dotfile_path # create the folder unless it already exists
+      else # regular file
+	link topfile_child_path, dotfile_child_path
+      end
+    end
+
+  else # just a regular file
+    link topfile_path, dotfile_path
+  end
+end
