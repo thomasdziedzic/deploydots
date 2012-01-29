@@ -34,7 +34,8 @@ Only the direct descendants of ~/dotfiles get prepended, all other descendant fi
 
 Folders will get created instead of symlinked as to not pollute the ~/dotfiles folder.
 
-Example:
+Example directory run through
+=============================
 
 ~/dotfiles/vimrc is a file, when running deploydots, since it is an immediate descendant, it gets symlinked to ~/.vimrc.
 
