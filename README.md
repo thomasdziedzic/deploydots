@@ -30,9 +30,10 @@ Explaining ~/dotfiles directory layout and decisions
 All direct descendants of ~/dotfiles will be prepended with a '.' so that you don't have to type ls -a to view folders under this directory.
 This also allows you to store files under ~/.git/ easily.
 
-Only the direct descendants of ~/dotfiles get prepended, all other descendant files get symlinked with the name stored under ~/dotfiles.
+Only the direct descendants of ~/dotfiles get prepended with a '.'.
+All other descendant files get symlinked with the name stored under ~/dotfiles.
 
-Folders will get created instead of symlinked as to not pollute the ~/dotfiles folder.
+Folders will get created instead of symlinked as to not pollute the ~/dotfiles folder by applications that write new files to those folders.
 
 Example directory run through
 =============================
