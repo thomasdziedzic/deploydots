@@ -63,5 +63,6 @@ git commit -m 'initial commit'
 Quick example creating symlinks from your dotfiles directory
 ============================================================
 ```
+git clone git://github.com/gostrc/dotfiles.git
 deploydots
 ```
