@@ -24,17 +24,17 @@ def link old, new
       # ask what we should do (replace, replace_all, skip, skip_all, or quit)
       response = nil
       loop do
-	puts "#{new} already exists, 1) replace 2) replace all 3) quit"
+	puts "#{new} already exists, 1) replace 2) replace all 3) skip 4) quit"
 	begin
 	  response = Integer gets.chomp
 	rescue ArgumentError
 	  puts "not a valid number"
 	end
 
-	if (1..3).member? response
+	if (1..4).member? response
 	  break
 	else
-	  puts "number not in range of 1..3"
+	  puts "number not in range of 1..4"
 	  redo
 	end
       end
@@ -48,6 +48,8 @@ def link old, new
 	File.delete new
 	File.symlink old, new
       when 3
+	return
+      when 4
 	exit
       end
     end 
