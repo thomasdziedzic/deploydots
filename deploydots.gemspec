@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = "deploydots"
-  s.version     = "0.1"
+  s.version     = "0.2"
   s.summary     = "Deploy your dots!"
   s.description = "Symlinks all your dot files from ~/dotfiles into ~"
   s.authors     = ["Thomas Dziedzic"]
