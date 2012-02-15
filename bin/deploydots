@@ -41,6 +41,7 @@ def link old, new
       $replace_all = true
       File.delete new
       File.symlink old, new
+      return
     when 3
       return
     when 4
@@ -60,7 +61,6 @@ Dir['*'].each do |topfile|
   dotfile_name = '.' + topfile
   dotfile_path = File.join home_dir, dotfile_name
   topfile_path = File.join dotfiles_dir, topfile
-  puts "topfile #{topfile}"
  ## If path element is directory
   if File.directory? topfile
     Find.find(topfile) do |file|
