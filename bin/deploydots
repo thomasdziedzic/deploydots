@@ -1,5 +1,4 @@
 #!/usr/bin/env ruby
-
 require 'find'
 
 $replace_all = false
@@ -12,50 +11,48 @@ Dir.chdir dotfiles_dir
 # makes a symlink which points from new -> old
 def link old, new
   if File.exists? new
-    if File.symlink? new
-      return # symlinked already
-    else # file exists but isn't a symlink, assuming regular file
-      if $replace_all
-	File.delete new
-	File.symlink old, new
-	return
+    if $replace_all
+      File.delete new
+      File.symlink old, new
+      return
+    end
+    # ask what we should do (replace, replace_all, skip, skip_all, or quit)
+    response = nil
+    loop do
+      puts "#{new} already exists, 1) replace 2) replace all 3) skip 4) quit"
+      begin
+        response = Integer gets.chomp
+      rescue ArgumentError
+        puts "not a valid number"
       end
-
-      # ask what we should do (replace, replace_all, skip, skip_all, or quit)
-      response = nil
-      loop do
-	puts "#{new} already exists, 1) replace 2) replace all 3) skip 4) quit"
-	begin
-	  response = Integer gets.chomp
-	rescue ArgumentError
-	  puts "not a valid number"
-	end
-
-	if (1..4).member? response
-	  break
-	else
-	  puts "number not in range of 1..4"
-	  redo
-	end
+      
+      if not (1..4).member? response
+        puts "number not in range of 1..4"
+        redo
       end
-
-      case response
-      when 1
-	File.delete new
-	File.symlink old, new
-      when 2
-	$replace_all = true
-	File.delete new
-	File.symlink old, new
-      when 3
-	return
-      when 4
-	exit
-      end
-    end 
+    
+    case response
+    when 1
+      File.delete new
+      puts "Symbolically linking #{old} to #{new}"
+      File.symlink old, new
+      return
+    when 2
+      $replace_all = true
+      File.delete new
+      File.symlink old, new
+      return
+    when 3
+      return
+    when 4
+      exit
+    end
+  end 
   else
-    # just create a regular symlink
-    File.symlink old, new
+    ## otherwise the file doesn't exist
+    ## just create a regular symlink
+    puts "#{new} doesnt exist. Creating symlink with #{old}"
+    File.symlink old, new unless File.symlink? old
   end
 end
 
@@ -64,19 +61,17 @@ Dir['*'].each do |topfile|
   dotfile_name = '.' + topfile
   dotfile_path = File.join home_dir, dotfile_name
   topfile_path = File.join dotfiles_dir, topfile
+ ## If path element is directory
   if File.directory? topfile
-    Dir.mkdir dotfile_path unless File.directory? dotfile_path # create the folder unless it already exists
-
     Find.find(topfile) do |file|
       dotfile_child_path = File.join(home_dir, '.' + file)
       topfile_child_path = File.join(dotfiles_dir, file)
       if File.directory? topfile_child_path
-	Dir.mkdir dotfile_child_path unless File.directory? dotfile_path # create the folder unless it already exists
-      else # regular file
-	link topfile_child_path, dotfile_child_path
+          Dir.mkdir dotfile_child_path if File.directory? topfile_child_path and not File.exists? dotfile_child_path 
+      else
+          link topfile_child_path, dotfile_child_path unless File.directory? topfile_child_path
       end
     end
-
   else # just a regular file
     link topfile_path, dotfile_path
   end
