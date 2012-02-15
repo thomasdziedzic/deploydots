@@ -70,7 +70,7 @@ Dir['*'].each do |topfile|
     Find.find(topfile) do |file|
       dotfile_child_path = File.join(home_dir, '.' + file)
       topfile_child_path = File.join(dotfiles_dir, file)
-      if File.directory? topfile_child_path
+      if File.directory? dotfile_child_path # If directory in deploy machine doesnt exist, create
 	Dir.mkdir dotfile_child_path unless File.directory? dotfile_path # create the folder unless it already exists
       else # regular file
 	link topfile_child_path, dotfile_child_path
