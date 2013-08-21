@@ -8,7 +8,7 @@ Then I run deploydots to create symlinks for all the files in ~.
 
 Dependencies
 ============
-ruby
+ruby 1.9+
 
 Installing
 ==========
